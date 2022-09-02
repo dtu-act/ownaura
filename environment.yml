@@ -1,0 +1,20 @@
+name: ownaura
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - matplotlib=3.3.2
+  - numpy=1.19.2
+  - pip=20.3.3
+  - python=3.9
+  - scipy=1.6.0
+  - pandas
+  - pip:
+    - acoustics==0.2.4.post0
+    - pytz==2021.1
+    - response==0.5.0
+    - soundfile==0.10.3.post1
+    - sounddevice==0.4.1
+    - tabulate==0.8.7
+    - tqdm==4.56.2
+    - -e ./libownaura
