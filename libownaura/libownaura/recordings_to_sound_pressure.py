@@ -86,7 +86,7 @@ def calibrator_gain_from_calibrator_recording(fname):
     gain_window = window.mean()
     rec_windowed = rec * window / gain_window
     A = amplitude_spectrum(rec_windowed)
-   
+
     # uncalibrated amplitude
     pressure_measured = np.abs(A).max()
 
@@ -119,7 +119,7 @@ def headset_to_sound_pressure(x, calibrator_gain, ir_headset_measmic):
     x = lfilter(ir_headset_measmic, 1, x)
     return x
 
-    
+
 # %%
 def test():
     calibrator_recording = "M:\\OwnAura\\Data\\measurement_microphone_SPLcalibration_recording.wav"
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--debug", action="store_true", help="turn on debug plotting", default=False
     )
-    
+
     args = parser.parse_args()
     DEBUG = args.debug
 
@@ -175,12 +175,12 @@ if __name__ == "__main__":
     print("Computing calibration gains and filters")
     calibrator_gain = calibrator_gain_from_calibrator_recording(args.measmic_calibrator_recording)
     ir_headset_measmic = compute_H_direct_avil(args.headset_measmic_calibration_recording, reg=10e-14, constrained=True, window_length=1024)
-    
+
     for f in args.files:
         print("Processing ", f, "...")
         x, fs = sf.read(f)
         assert x.shape[1] == 2, "Can only calibrate 2channel recordings made with the convolver patch"
-    
+
         if DEBUG:
             plt.figure()
             plt.title("file to be compesanted")
@@ -198,50 +198,3 @@ if __name__ == "__main__":
         xn, fs = sf.read(newfilename)
         print(10*np.log10(np.sum(xn[:, measmic_channel_convolver_recording]**2)/len(xn[:, measmic_channel_convolver_recording])/(20e-6)**2))
         print("saved ", newfilename)
-
-
-# %% 
-# def convert_calibration_recording_format_to_convolver_recording_format(f):
-#     x, fs = sf.read(f)
-#     assert x.shape[1] == 3
-
-#     x = np.delete(x, 0, 1)
-
-#     newfilename = str(Path(f).with_suffix("")) + "_as_2chan_conv_recording.wav"
-#     sf.write(newfilename, x, fs, format="WAV", subtype="FLOAT")
-
-# fname = "M:\\OwnAura\\Data\\measurement_microphone_SPLcalibration_recording.aif"
-# convert_calibration_recording_format_to_convolver_recording_format(fname)
-
-# %%
-# twochan_calibrated = "M:\\OwnAura\\Data\\measurement_microphone_SPLcalibration_recording_as_2chan_conv_recording_sound pressure at 1m.wav"
-# twochan = "M:\\OwnAura\\Data\\measurement_microphone_SPLcalibration_recording_as_2chan_conv_recording.wav"
-# threechan = "M:\\OwnAura\\Data\\measurement_microphone_SPLcalibration_recording.aif"
-
-# for f in [twochan_calibrated, twochan, threechan]:
-#     x, fs = sf.read(f)
-
-#     if x.shape[1] == 2:
-#         plt.figure()
-#         plt.title(f)
-#         plt.plot(x[:, measmic_channel_convolver_recording], label="conv measmic")
-#         plt.legend()
-#         plt.figure()
-#         plt.title(f)
-#         plt.plot(x[:, headset_channel_convolver_recording], label="conv headset")
-#         plt.legend()
-#     if x.shape[1] == 3:
-#         plt.figure()
-#         plt.title(f)
-#         plt.plot(x[:, measmic_channel_calibration_recording], label="cal measmic")
-#         plt.legend()
-#         plt.figure()
-#         plt.title(f)
-#         plt.plot(x[:, headset_channel_calibration_recording], label="cal headset")
-#         plt.legend()
-    
-#     plt.show()
-    
-# # %%
-
-# %%
